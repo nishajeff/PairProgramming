@@ -31,6 +31,26 @@ public class EvilCorpBankApp {
 	        //creating PreparedStatement object to execute query
 	        PreparedStatement preStatement = conn.prepareStatement(sql);
 	        ResultSet result = preStatement.executeQuery();
+	       // System.out.println(result);
+	        if(result.next()==false){
+	        	System.out.println("Account does not exist.Do you wish to open an account?(y/n)");
+	        	String ch=sc.nextLine();
+	        	if(ch.equalsIgnoreCase("y")){
+	        		System.out.println("Enter the account num:");
+	        		int acnumber=Integer.parseInt(sc.nextLine());
+	        		System.out.println("Enter the name:");
+	        		String name=sc.nextLine();
+	        		System.out.println("Enter a birth date(mm/dd/yyyy)");
+	        		String birthday=sc.nextLine();
+	        		Statement st = conn.createStatement();
+			        String q="insert into evilcorpcustomer values("+acnumber+",'"+name+"',0,"+"to_date('"+birthday+"','mm/dd/yyyy'))" ; 
+			        System.out.println(q);
+			        st.execute(q);
+			        System.out.println("Congrats!Account Open.");
+	        	}
+	        	
+	        }
+	        else{
 	        Customer cust=null;
 	        while(result.next()){
 	        	  cust=new Customer(result.getInt("acc_num"),result.getString("Name"),result.getInt("start_bal"),result.getDate("birthday"));
@@ -80,7 +100,9 @@ public class EvilCorpBankApp {
            String query2="update evilcorptrans set trans_processed=1 where user_id='"+acct_number+"'";
            stmt.execute(query2); 
            System.out.println("Current balance= "+cust.getBalance());
+	    }
            conn.close();
+           sc.close();
            
 	}
 	public static Date ChangeToDate(String userInput){
