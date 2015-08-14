@@ -31,6 +31,7 @@ public class EvilCorpBankApp {
 
 	        //creating PreparedStatement object to execute query
 	        PreparedStatement preStatement = conn.prepareStatement(sql);
+
 	        ResultSet result =null;
 	        result  = preStatement.executeQuery();	        
 	        //System.out.println(result);
@@ -47,7 +48,7 @@ public class EvilCorpBankApp {
 	        			rs=s.executeQuery(qury);
 	        			acnumber=1000+r.nextInt(9999);
 	        			}while(rs.next()==true); 
-	        		System.out.println("New Account No:="+acnumber);	        		
+	        		System.out.println("New Account No:="+acnumber);
 	        		System.out.println("Enter the name:");
 	        		String name=sc.nextLine();
 	        		System.out.println("Enter a birth date(mm/dd/yyyy)");
@@ -57,10 +58,10 @@ public class EvilCorpBankApp {
 			        st.execute(q);
 			        System.out.println("Congrats!Account Open.");
 	        	}
-	        	
+	        	       	
 	        }
 	        else{
-	        	 result  = preStatement.executeQuery();		
+	        	result  = preStatement.executeQuery();		
 		        Customer cust=null;	       
 		        while(result.next()){
 		        	  cust=new Customer(result.getInt("acc_num"),result.getString("Name"),result.getInt("start_bal"),result.getDate("birthday"));
@@ -126,7 +127,9 @@ public class EvilCorpBankApp {
         		   else 
         		   System.out.println("Cannot close acount due to negative balance.Pay dues and try again!"); 
 
+
            }
+
 	    }
            conn.close();
            sc.close();
