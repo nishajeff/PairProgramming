@@ -83,9 +83,12 @@ public class EvilCorpBankApp {
            System.out.println("done"); 
            System.out.println("Do you want to process aother transaction(Y/N):");
            String choice=sc.nextLine();
+           
+           int type=0;
            while(choice.equalsIgnoreCase("y")){
         	   System.out.println("Enter a transaction type (Check-1, Debit card-2, Deposit-3 or Withdrawal-4 or CloseAccount=5):");
-        	   int type=Integer.parseInt(sc.nextLine());
+        	   type=Integer.parseInt(sc.nextLine());
+        	   if(type!=5){
         	   System.out.println("Enter the amount:");				
 				int amount=Integer.parseInt(sc.nextLine());
 				System.out.println("Enter the date of transaction");
@@ -97,11 +100,14 @@ public class EvilCorpBankApp {
 		        String query="insert into evilcorptrans values(transaction_seq.nextval,"+Integer.parseInt(acct_number)+","+trans.getAmount()+","+trans.getTransaction_type()+","+"to_date('"+userInput+"','mm/dd/yyyy'),1)" ;   
 		        System.out.println(query);
 		        st.execute(query);
-		        cust.addToTransactions(trans);
+		        cust.addToTransactions(trans);        	   
 				 System.out.println("Do you want to process another transaction(Y/N):");
 		         choice=sc.nextLine();
+        	   }
+        	   else
+        		   choice="n";
            }
-           
+          if(type!=5){ 
            cust.updateBalance();
            Statement stmt = conn.createStatement();
            String query1="update evilcorpcustomer set start_bal="+cust.getBalance()+" where acc_num='"+acct_number+"'";           
@@ -109,6 +115,20 @@ public class EvilCorpBankApp {
            String query2="update evilcorptrans set trans_processed=1 where user_id='"+acct_number+"'";
            stmt.execute(query2); 
            System.out.println("Current balance= "+cust.getBalance());
+          }
+   	   else{
+   		   if(cust.getBalance()==0){
+   			   Statement state=conn.createSatement();
+   			   String qy="delete from evilcorpcustomer where acc_num="+acct_number;
+   			   String qy1="delete from evilcorptrans where user_id="+acct_number;
+   			   state.execute(qy);
+   		   }
+   		   else if(cust.getBalance()>0)
+   			   System.out.println("Cannot close account.Non-zero balance.Withdraw current balance and try again!");
+   		   else
+   			   System.out.println("Cannot close acount due to negative balance.Pay dues and try again!");
+   			   
+   	   }
 	    }
            conn.close();
            sc.close();
