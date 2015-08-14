@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Properties;
 import java.util.Scanner;
+import java.util.Random;
 public class EvilCorpBankApp {
 	
 	public static void main(String[] args)throws SQLException  {
@@ -30,14 +31,22 @@ public class EvilCorpBankApp {
 
 	        //creating PreparedStatement object to execute query
 	        PreparedStatement preStatement = conn.prepareStatement(sql);
-	        ResultSet result = preStatement.executeQuery();
+	        ResultSet res = preStatement.executeQuery();
+	        
 	       // System.out.println(result);
 	        if(result.next()==false){
 	        	System.out.println("Account does not exist.Do you wish to open an account?(y/n)");
 	        	String ch=sc.nextLine();
+	        	Random r=new Random();
+        		int acnumber=1000+r.nextInt(9999);
 	        	if(ch.equalsIgnoreCase("y")){
-	        		System.out.println("Enter the account num:");
-	        		int acnumber=Integer.parseInt(sc.nextLine());
+	        		do{	        		
+	        		Statement s=conn.createStatement();
+	        		String qury="select acc_num from evilcorpcustomer where acc_num="+acnumber;
+	        		ResultSet rs=s.execute(qury);	        		
+	        		}while(rs.next());
+	        		//System.out.println("Enter the account num:");
+	        		//int acnumber=Integer.parseInt(sc.nextLine());
 	        		System.out.println("Enter the name:");
 	        		String name=sc.nextLine();
 	        		System.out.println("Enter a birth date(mm/dd/yyyy)");
