@@ -48,6 +48,27 @@ public class Customer{
     public void addToList(Account a){
     	list.add(a);
     }
+    public Account getCheckinAccount(){
+    	for(Account temp:this.getList()){
+    		if(temp.getAcc_type().equalsIgnoreCase("Checking"))
+    			return temp;    		
+    	}
+    	return null;
+    }
+    public Account getSavingsAccount(){
+    	for(Account temp:this.getList()){
+    		if(temp.getAcc_type().equalsIgnoreCase("Savings"))
+    			return temp;    		
+    	}
+    	return null;
+    }
+    public Account getAccountforCust(int act_num){
+    	for(Account temp:this.getList()){
+    		if(temp.getAcc_num()==act_num)
+    			return temp;    		
+    	}
+    	return null;
+    }
 	public void updateBalance(){
 		if(!isSavingAccountExist()){
 			for(Account temp:list){
@@ -112,12 +133,13 @@ public class Customer{
 						if(chkng.getBalance()<0 && !(t.getTransaction_type()==3))
 						{
 							int bal=chkng.getBalance();
-							System.out.println("bal="+bal);
+							//System.out.println("bal="+bal);
 							int bal1=bal-2*bal;
-							System.out.println("bal="+bal1);
+							//System.out.println("bal="+bal1);
 							if(sav.getBalance()>=0 && sav.getBalance()>=(bal1+15) ){							
 								sav.setBalance(sav.getBalance()-(bal1+15));
-								chkng.setBalance(0);							
+								chkng.setBalance(0);
+								System.out.println("Overdraft.$15 transfer fee deducted from Savings Account");
 								chkng.addToTransactions(new Transaction(3,new Date(),bal1,1));
 								sav.addToTransactions(new Transaction(4,new Date(),bal1+15,1));							
 							}
@@ -125,7 +147,7 @@ public class Customer{
 							bal-=35;
 							chkng.setBalance(bal);
 							}
-							//temp.setFlag(true);
+							
 						}
 					
 					}
@@ -145,12 +167,13 @@ public class Customer{
 					if(chkng.getBalance()<0 )
 						{
 							int bal=chkng.getBalance();
-							System.out.println("bal="+bal);
+							//System.out.println("bal="+bal);
 							int bal1=bal-2*bal;
-							System.out.println("bal="+bal1);
+							//System.out.println("bal="+bal1);
 							if(sav.getBalance()>=0 && sav.getBalance()>=(bal1+15) ){							
 								sav.setBalance(sav.getBalance()-(bal1+15));
-								chkng.setBalance(0);							
+								chkng.setBalance(0);
+								System.out.println("Overdraft.$15 transfer fee deducted from Savings Account");
 								chkng.addToTransactions(new Transaction(3,new Date(),bal1,1));
 								sav.addToTransactions(new Transaction(4,new Date(),bal1+15,1));							
 							}
@@ -160,6 +183,11 @@ public class Customer{
 				
 			}
  }
+public void updateSavingsAccountbalance(int amt){
+	int bal=this.getSavingsAccount().getBalance();
+	bal=bal+amt;
+	this.getSavingsAccount().setBalance(bal);
+}
 public  boolean isSavingAccountExist(){
 		boolean flag=false;
 		for(Account temp:list){
